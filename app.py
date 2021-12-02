@@ -43,6 +43,7 @@ def index():
 
 
 #   Login
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # data = request.form
@@ -84,6 +85,7 @@ def login():
 
 
 #   Sign Up
+
 @app.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
@@ -129,11 +131,15 @@ def sign_up():
 
 
 #   Logout
+
 @app.route('/logout')
 def logout():
     session.pop("user", None)
     return redirect(url_for('login'))
 
+
+
+#   Home
 
 @app.route('/home', methods=['GET', "POST"])
 def home():
@@ -185,6 +191,8 @@ def home():
 
     return render_template("login.html")
 
+
+#   Task Page
 
 @app.route('/task', methods=['GET', 'POST'])
 def task():
@@ -261,6 +269,8 @@ def task():
     return render_template("login.html")
 
 
+#   Add Comment
+
 @app.route('/add_comment', methods=['GET', "POST"])
 def addComment():
     if "user" in session:
@@ -299,6 +309,7 @@ def addComment():
 
             # return redirect(url_for('task'))
 
+#   Remove Comment
 
 @app.route('/remove_comment', methods=['GET', "POST"])
 def removeComment():
@@ -336,6 +347,8 @@ def removeComment():
 
             return redirect(url_for('task'))
 
+
+#   Create New Task
 
 @app.route('/new_task', methods=['GET', "POST"])
 def newTask():
@@ -402,6 +415,8 @@ def newTask():
 
     return render_template("new_task.html")
 
+
+#   Boss Page
 
 @app.route('/boss', methods=['GET', "POST"])
 def boss():
@@ -475,6 +490,8 @@ def boss():
     return render_template("login.html")
 
 
+#   Update Task
+
 @app.route('/update_task', methods=['GET', "POST"])
 def updateTask():
     if "user" in session:
@@ -507,268 +524,10 @@ def updateTask():
 
 
 
-
-
-
-
-
-
-
-
 @app.route('/assign_user', methods=['GET', "POST"])
 def assignUser():
     return render_template("home.html")
 
-
-#   Capture current list of movies shown on the screen
-# @app.route('/shown_movies', methods=['GET', 'POST'])
-# def shownMovies():
-#     if "user" in session:
-#         if request.method == 'POST':
-#
-#             # Get list
-#             information = request.data
-#             temp = json.loads(information)
-#             # print(temp)
-#
-#             return "200"
-
-
-#  User clicks on Movie, caputre Title save as Viewed
-# @app.route('/viewed_movie', methods=['GET', 'POST'])
-# def viewedMovie():
-#     if "user" in session:
-#         if request.method == 'POST':
-#
-#             # Get Movie
-#             information = request.data
-#             temp = json.loads(information)
-#             # print(temp['value'])
-#             watched_title = temp['value']
-#             # print(watched_title)
-#
-#             user = session['user']
-#             # print(user)
-#             # parse user name from user object
-#             user_name = user[0]['email']
-#
-#             # Open Connection
-#             cur = mysql.connection.cursor()
-#
-#             # check if movice already in db
-#             # select_stmt = """ SELECT COUNT(movie_title) FROM viewed WHERE movie_title = %(watched_title)s """
-#             # values = (watched_title)
-#             # query = """ SELECT movie_title FROM viewed WHERE movie_title = %s """
-#             # cur.execute(query, values)
-#             # is_in_db = cur.fetchall()
-#             # print(is_in_db)
-#
-#             viewed_data = (user_name, watched_title)
-#
-#             cur.execute('''INSERT INTO viewed VALUES (%s, %s)''', viewed_data)
-#             mysql.connection.commit()
-#             # Close the cursor connection
-#             cur.close()
-#             flash("Moive added to Viewed List", category='success')
-#             # return redirect(url_for('search'))
-#             return redirect(url_for('search'))
-
-
-#  Search Text Captured from search field to show recietn searches
-# @app.route('/filtered-list', methods=['GET', 'POST'])
-# def searchData():
-#     if "user" in session:
-#         if request.method == 'POST':
-#             search_data = request.data
-#             temp = json.loads(search_data)
-#             # print(temp)
-#             tempGenre = temp[0]['genres']
-#             # print(tempGenre)
-#             # print(temp[0]['genres'])
-#
-#             # parse user name from user object
-#             user = session['user']
-#             user_name = user[0]['email']
-#
-#             for g in tempGenre:
-#                 # Open Connection
-#                 # print(g)
-#                 cur = mysql.connection.cursor()
-#
-#                 # Feed Filtered List into Database
-#                 search_data = (user_name, '', g)
-#                 cur.execute('''INSERT INTO search VALUES (%s, %s, %s)''', search_data)
-#                 mysql.connection.commit()
-#                 # Close the cursor connection
-#                 cur.close()
-#
-#             return "200"
-
-
-#  Search Text Captured from search field to show recietn searches
-# @app.route('/search', methods=['GET', "POST"])
-# def search():
-#     if "user" in session:
-#         if request.method == 'POST':
-#             # Open Connection
-#             cur = mysql.connection.cursor()
-#
-#             user = session['user']
-#             # print(user[0]['email'])
-#             user_email = user[0]['email']
-#
-#             information = request.data
-#             temp = json.loads(information)
-#             # print(temp['value'])
-#             search_text = temp['value']
-#             # print(search_text)
-#
-#             search_data = (user_email, search_text, '')
-#
-#             cur.execute('''INSERT INTO search VALUES (%s, %s, %s)''', search_data)
-#             mysql.connection.commit()
-#             # Close the cursor connection
-#             cur.close()
-#             return "200"
-#         else:
-#             return render_template('search.html', data=data)
-#     else:
-#         return redirect(url_for("login"))
-#
-# @app.route('/clear_viewd', methods=['GET', 'POST'])
-# def clearViewed():
-#     if "user" in session:
-#         if request.method == 'GET':
-#             # snapshot user object
-#             user = session['user']
-#             # print(user)
-#
-#             # parse user name from user object
-#             user_name = user[0]['email']
-#
-#             # Open Connection
-#             cur = mysql.connection.cursor()
-#             delete_movie_title = """DELETE FROM viewed  WHERE email = %(user_name)s """
-#             cur.execute(delete_movie_title, {'user_name': user_name})
-#             mysql.connection.commit()
-#             # Close the cursor connection
-#             cur.close()
-#             # print(movie_title)
-#             return  redirect(url_for('home'))
-#     return render_template('home.html')
-
-
-#
-# @app.route('/clear_searched', methods=['GET', 'POST'])
-# def clearSearched():
-#     if "user" in session:
-#         if request.method == 'GET':
-#             # snapshot user object
-#             user = session['user']
-#             # print(user)
-#
-#             # parse user name from user object
-#             user_name = user[0]['email']
-#
-#             # Open Connection
-#             cur = mysql.connection.cursor()
-#             delete_movie_title = """DELETE FROM search  WHERE email = %(user_name)s AND genres = '' """
-#             cur.execute(delete_movie_title, {'user_name': user_name})
-#             mysql.connection.commit()
-#             # Close the cursor connection
-#             cur.close()
-#             # print(movie_title)
-#             return  redirect(url_for('home'))
-#     return render_template('home.html')
-#
-# @app.route('/clear_genres', methods=['GET', 'POST'])
-# def clearGenres():
-#     if "user" in session:
-#         if request.method == 'GET':
-#             # snapshot user object
-#             user = session['user']
-#             # print(user)
-#
-#             # parse user name from user object
-#             user_name = user[0]['email']
-#
-#             # Open Connection
-#             cur = mysql.connection.cursor()
-#             delete_movie_title = """DELETE FROM search  WHERE email = %(user_name)s AND genres != '' """
-#             cur.execute(delete_movie_title, {'user_name': user_name})
-#             mysql.connection.commit()
-#             # Close the cursor connection
-#             cur.close()
-#             # print(movie_title)
-#             return  redirect(url_for('home'))
-#     return render_template('home.html')
-
-
-# #   Dispcy Home screen, with recent Searches, Genres Searched, and Movices viewd listed
-# @app.route('/home', methods=['GET', "POST"])
-# def home():
-#     if "user" in session:
-#         # Open Connection
-#         cur = mysql.connection.cursor()
-#
-#         # snapshot user object
-#         user = session['user']
-#         # print(user)
-#
-#         # parse user name from user object
-#         user_name = user[0]['email']
-#         # print(user_name)
-#
-#         # get firstname of user from user db
-#         select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
-#         cur.execute(select_first_name, {'user_name': user_name})
-#         first_name_obj = cur.fetchall()
-#         first_name = first_name_obj[0]['first_name']
-#         # print(first_name)
-#
-#         # get previous searches of user from search db
-#         select_search_text = """SELECT search_text FROM search WHERE email = %(user_name)s AND genres = '' """
-#         cur.execute(select_search_text, {'user_name': user_name})
-#         search_text = cur.fetchall()
-#         # print(search_text)
-#
-#         # get movies viewed by user from viewed db
-#         select_movie_title = """SELECT movie_title FROM viewed WHERE email = %(user_name)s """
-#         cur.execute(select_movie_title, {'user_name': user_name})
-#         movie_title = cur.fetchall()
-#         # print(movie_title)
-#
-#         # get genres searched by user from viewed db
-#         select_genre = """SELECT genres, count(genres) as count FROM search
-#                 WHERE email = %(user_name)s AND genres != ''GROUP BY genres ORDER BY count(genres) desc """
-#         cur.execute(select_genre, {'user_name': user_name})
-#         movie_genre = cur.fetchall()
-#         # print(movie_genre)
-#         # json_movie_genre = json.loads(movie_genre)
-#         def condition(data):
-#             for key in movie_genre:
-#                 # print(data)
-#                 for x, y in zip(data['genres'], key):
-#                     if x == key[y]:
-#                         # print(x)
-#                         # print(key[y])
-#                         return True
-#
-#         filtered_by_genre = [x for x in data if condition(x)]
-#         print(filtered_by_genre)
-#         print(type(filtered_by_genre))
-#         # print("BREAK")
-#         # print(data)
-#
-#         # Close the cursor connection
-#         cur.close()
-#         return render_template('home.html', filtered_by_genre=filtered_by_genre,
-#                                first_name=first_name,
-#                                search_text=search_text,
-#                                movie_title=movie_title,
-#                                movie_genre=movie_genre,)
-#     else:
-#         return redirect(url_for("login"))
 
 
 if __name__ == '__main__':
