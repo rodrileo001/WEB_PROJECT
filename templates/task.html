@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Task Details Page{% endblock %}
+
+
+{% block content %}
+
+<div id="homeTitleSpan">
+    <h1 class="text-center mt-4" id="taskID">Task {{ task_number }} Details</h1>
+</div>
+
+<!-- ------------------------------------------------------- Task Details ---------------------------------------------------------- -->
+
+<div class="container-fluid mt-3 bg" id="movieContainer">
+
+    <!-- Side Bar -->
+    <div class="col-2" id="sideBar"></div>
+    <div class="co-8" id="search_results">
+
+        <!-- Task Data-->
+
+        <div class="card" style="width: auto">
+
+            <div class="card-body">
+
+                <div class="container">
+                    <h3>Open Tasks</h3>
+                    <form action="/update_task" method="POST">
+                        <div class="row">
+                            <div class=" col">
+                                <span>Assigned To: </span>
+                                <select id="userChange" class="form-control" name="user_change">
+                                    <option selected>{{ task_assigned_to }}</option>
+                                    {% for user in user_list %}
+                                    <option>{{ user['first_name']}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col">
+                                <span>Status: </span>
+                                <select id="statusChange" class="form-control" name="status_change">
+                                    <option selected>{{ task_status }}</option>
+                                    <option>Open</option>
+                                    <option>Pending</option>
+                                    <option>Closed</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <span>Priortiy: </span>
+                                <select id="priorityChange" class="form-control" name="priority_change">
+                                    <option selected>{{ task_priority }}</option>
+                                    <option>Low</option>
+                                    <option>Medium</option>
+                                    <option>High</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div class="row">
+                            <div class="col">
+                                <span>Start Date: </span>
+                                <input type="text" class="form-control" id="startDateChange" name="start_date_change"
+                                    value="{{ task_start_date }}" readonly>
+                            </div>
+                            <div class=" col">
+                                <span>Target Date: </span>
+                                <input type="date" class="form-control" id="targetChange" name="target_change"
+                                    value="{{ task_target_date }}">
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div class="row mt-3">
+                            <div class="col-4 ">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Task</span>
+                                    </div>
+                                    <textarea class="form-control" aria-label="With textarea" rows="1"
+                                        placeholder="{{ task_label }}" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Description</span>
+                                    </div>
+                                    <textarea class="form-control" aria-label="With textarea" rows="1"
+                                        placeholder="{{ task_description }}" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
+                <button type="submit" class="btn btn-outline-secondary btn mt-4 float-right">Update</button>
+                <input type="hidden" name="updateTaskNum" value="{{ task_number }}">
+                </form>
+
+
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for comment in comment_list %}
+                <form action="/remove_comment" method="POST">
+                    <li class="list-group-item">
+                        <div class="media">
+                            <i class="far fa-comment-alt mr-2 mt-1"></i>
+                            <div class="media-body">
+                                <h5 class="mt-0">{{ comment['assigned_to']}}</h5>
+                                <p>{{ comment['comment']}}</p>
+                                <button href="/remove_comment" type="submit"
+                                    class="btn btn-sm btn-outline-secondary float-right">Remove</button>
+                            </div>
+                        </div>
+                    </li>
+                    <input type="hidden" name="commentText" value="{{ comment['comment']}}">
+                    <input type="hidden" name="commentTaskNum" value="{{ task_number }}">
+                </form>
+                {% endfor %}
+            </ul>
+
+            <!-- Button trigger modal -->
+            <div class="card-body">
+                <a class="btn btn-outline-dark ml-auto d-block" role="button" type="button" id="addComment" href=""
+                    aria-disabled="true" data-toggle="modal" data-target="#staticBackdrop">Add Comment</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-2" id="sideBar"></div>
+</div>
+
+<!-- Modal for Comment-->
+<div class="modal fade modal-dialog modal-dialog-centered" id="staticBackdrop" data-backdrop="static"
+    data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Add Comment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form action="/add_comment" method="POST" id="commentForm">
+                    <div class="form-group">
+                        <input type="hidden" name="task_number" value="{{ task_number }}" id="">
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="newCommentText"
+                            name="textArea" form="commentForm"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

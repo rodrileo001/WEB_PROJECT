@@ -1,0 +1,147 @@
+/* -----------  Body  ----------- */
+
+body,
+html {
+  background-color: rgb(132, 138, 148);
+}
+
+
+
+/* #dashboardTitle {
+
+
+} */
+
+#signUp {
+  color:rgb(132, 138, 148);
+  text-decoration: underline;
+}
+#signUp:hover {
+  color:rgb(74, 76, 78)
+}
+
+
+#loginSmText {
+  color:rgb(132, 138, 148)
+}
+#loginSmText:hover {
+  color:rgb(74, 76, 78)
+}
+
+
+#dashboardCard {
+  background-color: rgb(62, 70, 77);
+  border-radius: 20px
+}
+
+
+.ulList {
+  border-radius: 10px;
+}
+
+.homeCardTitle {
+  color: white;
+}
+
+.movieInfoCard {
+  border-radius: 30px;
+}
+
+#loginCard {
+  background-color: rgb(183, 198, 209);
+  width: 25em;
+  border-radius: 20px
+}
+
+#registerCard {
+  background-color: rgb(183, 198, 209);
+  width: 25em;
+  border-radius: 20px
+}
+
+#landingCard {
+  background-color: rgb(183, 198, 209);
+  width: 25em;
+  border-radius: 20px
+}
+
+/* -----------  Navebar  ----------- */
+
+#navbar {
+  border-radius: 20px;
+}
+
+#navTabs {
+  background-color: gray;
+}
+
+#navBrand {
+  font-family: Comic Sans MS, Comic Sans, cursive;
+  font-size: 2em;
+  padding-right: 10px;
+}
+
+#navbarDropdown {
+  color: white;
+}
+
+#radioBtn {
+  padding-left: 10px;
+  color: white;
+}
+
+/* -----------  Movie List  ----------- */
+
+#movieContainer {
+  height: auto;
+  /* background: linear-gradient(55deg, gray 10%, gray 51%, black 85%); */
+}
+
+#sideBar {
+  background-color: black;
+}
+
+#dblClickText {
+  color: white;
+  margin-left: 10px;
+  font-size: .75em;
+  font-weight: lighter;
+  font-family: Arial, Helvetica, sans-serif;
+  display: inline-block;
+  align-self: flex-end;
+}
+
+#movieButton {
+  margin: 1.5em auto;
+  box-sizing: border-box;
+  box-shadow: 0px 10px 14px -7px #276873;
+  /* background-image: radial-gradient(rgb(122, 126, 133) 30%, rgb(83, 91, 102) 10%, rgb(69, 71, 82) 60%);  */
+  background-color: rgb(45, 49, 53);
+  border-radius: 10px;
+  border: 1px solid #29668f;
+  /*//display: flexbox;*/
+  cursor: pointer;
+  color: white;
+  font-family: Bradley Hand, cursive;
+  font-size: 28px;
+  padding-top: 12px;
+  text-decoration: none;
+  /* text-shadow: 0px 2px 0px #84b0bf; */
+}
+
+#movieButton.hover {
+  background: linear-gradient(to bottom, #408c99 5%, #599bb3 100%);
+  background-color: #58a1ad;
+}
+#movieButton:active {
+  position: relative;
+  top: 1px;
+}
+
+#cardBody {
+  background-image: radial-gradient(gray 10%, rgb(56, 55, 55) 30%, black 60%);
+  font-family: cursive;
+  font-size: larger;
+  color: white;
+}
+

@@ -1,10 +1,54 @@
 {% extends "base.html" %}
 
+{% block title %}Login Page{% endblock %}
+
+
+{% block navbar %}
+{% endblock %}
+
+
 {% block content %}
-<h1 class="title">
-    Flask Login Example
-</h1>
-<h2 class="subtitle">
-    Create a Login page using Flask :)
-</h2>
+
+<div class="card mt-5 mx-auto" id="landingCard">
+    <img src="/static/projector.jpg" class="card-img-top" alt="...">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for categor, message in messages %}
+    {% if categor == 'error' %}
+    <div class="alert alert-danger alert-dismissable fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alert-dismissable fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    {% endwith %}
+
+
+
+
+    <div class="card-body">
+        <div class="card mx-auto">
+            <div class="card-body">
+                <h5 class="card-title">Movie Archive</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Database</h6>
+                <p class="card-text">Search our vast array of titles, genres, and cast memebers</p>
+                <a href="/login" id="login" class="card-link">Login</a>
+                <a href="/sign-up" id="signUp" class="card-link">Register</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}

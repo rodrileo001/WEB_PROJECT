@@ -1,28 +1,74 @@
 {% extends "base.html" %}
 
+{% block title %}Login Page{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+
 {% block content %}
-<div class="column is-4 is-offset-4">
-    <h3 class="title">Login</h3>
-    <div class="box">
+
+
+<div class="card mt-5 mx-auto" id="loginCard">
+    <img src="/static/coffee_to_do_list.jpg" class="card-img-top" alt="...">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for categor, message in messages %}
+    {% if categor == 'error' %}
+    <div class="alert alert-danger alert-dismissable fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alert-dismissable fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
+    {% endwith %}
+
+
+
+
+    <!-- <div class="card-body">
+        <h5 class="card-title">Log In</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+            content.</p>
+    </div> -->
+
+
+    <div class="card-body">
         <form method="POST" action="/login">
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
-                </div>
+            <h3 class="card-title text-center">Welcome</h3>
+            <h6 class="card-title text-center mt-n2">Log In</h6>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder=""
+                    aria-describedby="emailText">
+                <!-- <small id="emailText" class="form-text text-muted">We'll never share your email with anyone
+                    else.</small> -->
             </div>
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Your Password">
-                </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="">
             </div>
-            <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox">
-                    Remember me
-                </label>
+            <button type="submit" class="btn btn-secondary btn-block mt-4 mb-3">Login</button>
+
+
+            <div class="d-flex justify-content-end">
+                <p class="text-muted">No accout? <a href="/sign-up" id="signUp" class="card-link">Register</a></p>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth">Login</button>
         </form>
+
     </div>
 </div>
+
+
 {% endblock %}

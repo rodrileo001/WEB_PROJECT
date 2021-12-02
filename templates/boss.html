@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}Users Page{% endblock %}
+
+
+{% block body %}
+
+{% block navbar %}
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark d-flex">
+    <a class="navbar-brand" href="">Task Viewer</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#MainNavbarContent"
+        aria-controls="MainNavbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="MainNavbarContent">
+
+        <ul class="navbar-nav">
+            {% if "user" in session %}
+            <li class="nav-item ">
+                <a class="nav-link " id="homeTab" href="/home">Home <span class="sr-only">(current)</span></a>
+            </li>
+
+            <!-- <li class="nav-item">
+                    <a class="nav-link " id="searchTab" href="/search">Search</a>
+                </li> -->
+            <li class="nav-item ">
+                <a class="nav-link " id="newTaskTab" href="/new_task">New Task <span
+                        class="sr-only">(current)</span></a>
+            </li>
+        </ul>
+        <a class="btn btn-outline-secondary btn-sm ml-auto mt-3 mt-lg-0" role="button" type="button" id="logout"
+            href="/logout" aria-disabled="true">Logout</a>
+        {% endif %}
+    </div>
+</nav>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container mt-4">
+    <div id="homeTitleSpan">
+        <h1 class="text-center" id="dashboardTitle">Boss Dashboard</h1>
+    </div>
+    <div class="row mt-3">
+
+        <div class="col-sm-4">
+            <div class="card shadow-lg" id="dashboardCard">
+                <div class="card-body">
+                    <h5 class="card-title text-center homeCardTitle">Tasks Per User</h5>
+                    <ul class="list-group list-group-flush ulList">
+
+                        {% for user in user_count %}
+                        <li class=" list-group-item d-flex justify-content-between align-items-center">
+                            {{ user['assigned_to'] }}<span class="badge badge-light shadow">{{ user['count'] }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <!-- <a href="/clear_genres" class="btn btn-sm btn-outline-secondary mt-2 float-right">Clear</a> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card shadow-lg" id="dashboardCard">
+                <div class="card-body">
+                    <h5 class="card-title text-center homeCardTitle">Unassigned Tasks</h5>
+                    <ul class="list-group list-group-flush ulList">
+
+                        {% for count in unassigned_count %}
+                        <li class=" list-group-item d-flex justify-content-between align-items-center">
+                            Not Assigned<span class="badge badge-light shadow">{{ count['count'] }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <!-- <a href="/clear_viewd" class="btn btn-sm btn-outline-secondary mt-2 float-right">Clear</a> -->
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card shadow-lg" id="dashboardCard">
+                <div class="card-body">
+                    <h5 class="card-title text-center homeCardTitle">Priority Queue</h5>
+                    <ul class="list-group list-group-flush ulList">
+
+                        {% for count in priority_count %}
+                        <li class=" list-group-item d-flex justify-content-between align-items-center">
+                            {{ count['priority'] }}<span class="badge badge-light shadow">{{ count['count'] }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr class="my-4">
+
+    <div class="container-fluid mt-0 bg" id="taskListContainer">
+        <!-- <h3 class="text-center" id="suggestedSearchText">Suggested Movies based on Generes Searched</h3> -->
+
+        <!-- Side Bar -->
+        <div class="col-2" id="sideBar"></div>
+
+        <div class="col-8 mx-auto" id="task_list">
+
+            <!-- List of Moives-->
+
+            <!-- Title -->
+            <h3 class="text-center">Assigned Tasks</h3>
+            <table class="table table-dark shadow-lg">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Task</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Assigned To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in task_list %}
+                    <tr>
+
+                        <th scope="row">
+                            <form action="/task" method="POST">
+                                <input type="submit" name="taskNum" value="{{ task['task_num'] }}" id="taskNumLink">
+                            </form>
+
+                        </th>
+                        <td>{{ task['task'] }}</td>
+                        <td>{{ task['status'] }}</td>
+                        <td>{{ task['description'] }}</td>
+                        <td>{{ task['assigned_to'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <br>
+
+            <h3 class="text-center">Unassigned Tasks</h3>
+            <table class="table table-dark shadow-lg">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Task</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Description</th>
+                        <!-- <th scope="col">Assigned To</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in unassigned_task_list %}
+                    <tr>
+
+                        <th scope="row">
+                            <form action="/task" method="POST">
+                                <input type="submit" name="taskNum" value="{{ task['task_num'] }}" id="taskNumLink">
+                            </form>
+
+                        </th>
+                        <td>{{ task['task'] }}</td>
+                        <td>{{ task['status'] }}</td>
+                        <td>{{ task['description'] }}</td>
+                        <!-- <td>{{ task['assigned_to'] }}</td> -->
+                    </tr>
+                    {% endfor %}
+                    <!-- <tr>
+                        <th scope="row"><span>TSK002</span></th>
+                        <td>This is task 2</td>
+                        <td>Pending</td>
+                        <td>This is what you need to do for task 2</td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><span>TSK003</span></th>
+                        <td>This is task 3</td>
+                        <td>Closed</td>
+                        <td>This is what you need to do for task 3</td>
+                    </tr> -->
+                </tbody>
+            </table>
+
+            <br>
+
+            <h3 class="text-center">Closed Tasks</h3>
+            <table class="table table-dark shadow-lg">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Task</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Worked By</th>
+                        <!-- <th scope="col">Assigned To</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in closed_task_list %}
+                    <tr>
+
+                        <th scope="row">
+                            <form action="/task" method="POST">
+                                <input type="submit" name="taskNum" value="{{ task['task_num'] }}" id="taskNumLink">
+                            </form>
+
+                        </th>
+                        <td>{{ task['task'] }}</td>
+                        <td>{{ task['status'] }}</td>
+                        <td>{{ task['description'] }}</td>
+                        <td>{{ task['assigned_to'] }}</td>
+                    </tr>
+                    {% endfor %}
+                    <!-- <tr>
+                        <th scope="row"><span>TSK002</span></th>
+                        <td>This is task 2</td>
+                        <td>Pending</td>
+                        <td>This is what you need to do for task 2</td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><span>TSK003</span></th>
+                        <td>This is task 3</td>
+                        <td>Closed</td>
+                        <td>This is what you need to do for task 3</td>
+                    </tr> -->
+                </tbody>
+            </table>
+
+
+            <!-- <a href="/task">Task Details</a> -->
+
+
+
+
+        </div>
+        <div class="col-2" id="sideBar"></div>
+    </div>
+</div>
+{% endblock %}
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
+    integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+    crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
+<!-- 
+<script>
+    // const filteredByGenre = JSON.parse(' filtered_by_genre | tojson ');
+    //console.log(filteredByGenre)
+
+    homeAppendData(filteredByGenre, 0)
+    function homeAppendData(filtered_movies, b) {
+
+        var frag = document.createDocumentFragment();
+        var container = document.getElementById("suggested_movies");
+        container.innerHTML = '';
+        var heading3 = document.createElement('h3')
+        heading3.classList.add('text-center')
+        heading3.setAttribute('id', 'suggestedSearchText')
+        heading3.innerText = "Suggested Movies based on Generes Searched"
+
+
+        for (var i = b; i < b + per_page; i++) {
+
+            var btnEle = document.createElement("button");
+            btnEle.setAttribute("type", "button");
+            btnEle.classList.add("btn", "shadow", "btn-block", "btn-lg");
+            btnEle.setAttribute('name', 'movie_title')
+            btnEle.setAttribute("data-toggle", "collapse");
+            btnEle.setAttribute("id", "movieButton");
+            btnEle.setAttribute("data-target", `#collapseData${i}`);
+            btnEle.setAttribute("aria-expanded", "false");
+            btnEle.setAttribute("aria-controls", `collapseData${i}`);
+            btnEle.innerHTML = filtered_movies[i].title;
+
+            var cardEle = document.createElement("div");
+            cardEle.classList.add("collapse", "mx-5", "mb-3", "cardData");
+            cardEle.setAttribute("id", `collapseData${i}`)
+            var cardBody = document.createElement("div");
+            cardBody.setAttribute("id", "cardBody")
+            cardBody.classList.add("card", "card-body", "movieInfoCard");
+            var p = document.createElement("p");
+            p.classList.add("card-text");
+            var year = document.createElement("span");
+            year.innerHTML = `<span>Year: ${filtered_movies[i].year}</span><br>`;
+            var genre = document.createElement("span");
+            genre.innerHTML = `<span>Genre: ${filtered_movies[i].genres} </span><br>`;
+            var cast = document.createElement("span");
+            cast.innerHTML = `<span>Cast: ${filtered_movies[i].cast} </span><br>`;
+
+
+            p.appendChild(year);
+            p.appendChild(genre);
+            p.appendChild(cast);
+
+            cardBody.appendChild(p);
+            cardEle.appendChild(cardBody);
+
+            frag.appendChild(btnEle);
+            frag.appendChild(cardEle);
+        }
+        container.appendChild(heading3)
+        container.appendChild(frag);
+    }
+</script> -->
+
+
+
+
+{% endblock %}
