@@ -305,7 +305,7 @@ def addComment():
             # Close the cursor connection
             cur.close()
 
-            return render_template('task.html', task_number=task_number)
+            return redirect(url_for('home'))
 
     return redirect(url_for('task'))
 
@@ -467,7 +467,7 @@ def boss():
             print(user_count)
 
             # Get number of task per each Priority
-            select_priority_count_query = """SELECT priority, count(priority) as count FROM task 
+            select_priority_count_query = """SELECT priority, count(priority) as count FROM task WHERE status != 'Closed'
                                         GROUP BY priority ORDER BY count(priority) desc """
             cur.execute(select_priority_count_query)
             priority_count = cur.fetchall()
