@@ -365,13 +365,15 @@ def newTask():
             #   so all values can be passed to DB, and null inserted if nothing chosen
             # task_label = ''
             if request.form.get("task_label") == '':
-                flash("Please enter a title", category='error')
+                flash("Please enter a Title", category='error')
             elif request.form.get("task_desc") == '':
-                flash("Please enter a description", category='error')
+                flash("Please enter a Description", category='error')
             elif request.form.get("task_start") == '':
-                flash("Please enter a start date", category='error')
+                flash("Please enter a Start Date", category='error')
             elif request.form.get("task_status") == '':
-                flash("Please enter a status", category='error')
+                flash("Please enter a Status", category='error')
+            elif request.form.get("task_priority") == '':
+                flash("Please enter a Priority", category='error')
             else:
                 task_label = request.form.get("task_label")
                 task_desc = request.form.get("task_desc")
@@ -469,7 +471,7 @@ def boss():
             # print(user_count)
 
             # Get number of task per each Priority
-            select_priority_count_query = """SELECT priority, count(priority) as count FROM task WHERE status != 'Closed'
+            select_priority_count_query = """SELECT priority, count(priority) as count FROM task WHERE status NOT IN ("Closed", "")
                                         GROUP BY priority ORDER BY count(priority) desc """
             cur.execute(select_priority_count_query)
             priority_count = cur.fetchall()
