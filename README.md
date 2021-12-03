@@ -1,4 +1,49 @@
 My Update
+present
+
+•	Signup
+o	Error check for each field
+o	User Role
+
+•	Login
+
+•	User Home Page
+o	Users Task List only
+o	Shows Open Task and Closed Tasks for User
+
+•	Boss Page
+o	Tasks per User
+o	Unassigned Tasks
+o	Priority Queue
+o	Assigned, Unassigned, and Closed Tasks
+
+•	New Task – Only Boss can do this
+o	Increment Task Number by adding 1 to max
+o	Check box to assign to self when creating
+o	Or pick from user list
+
+
+
+•	Task Page
+o	Shows Details of Task
+o	Some Details Can be Changed
+o	Comments listed below
+o	Shows Who submitted the comment – 
+	Landing Page with all Tasks (only doing this to show user roles)
+	This would account for other users making comments on tasks.
+o	Add Comment
+o	Remove Comment
+	Can only be removed by the person that created it
+	So, if boss adds comment, user cannot delete it.
+
+
+
+•	Bugs
+o	Add/Remove Comment post issues, have it directed back to Home for now
+o	Modal needs to be rendered at body level in the DOM to center over everything. 
+
+
+
 
 # HERES OUR WEB PROJECT YAY 
 
