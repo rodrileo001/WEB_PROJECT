@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session, json, jsonify
+from flask import Flask, render_template, request,  flash, redirect, url_for, session, json, jsonify
 from flask_mysqldb import MySQL
+import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta  # Used to set session time, perm
 
@@ -219,7 +220,9 @@ def task():
         # print(first_name)
 
         # Get Task Number from form body
-        task_number = request.form.get('taskNum')
+        # task_number = request.form.get('taskNum')
+        task_number = request.args['taskNum']
+        print(task_number)
         # print(task_number)
 
         # get task detail of task from task table
@@ -301,9 +304,9 @@ def addComment():
             # Close the cursor connection
             cur.close()
 
-            return redirect(url_for('home'))
+            return redirect(url_for('task', taskNum=task_number))
 
-    return redirect(url_for('task'))
+    # return redirect(url_for('task'))
 
 #   Remove Comment
 
@@ -341,7 +344,7 @@ def removeComment():
             mysql.connection.commit()
             cur.close()
 
-            return redirect(url_for('home'))
+            return redirect(url_for('task', taskNum=task_num))
 
 
 #   Create New Task
@@ -360,59 +363,61 @@ def newTask():
 
             # Each field should be initialized to null
             #   so all values can be passed to DB, and null inserted if nothing chosen
-            task_label = ''
-            task_label = request.form.get("task_label")
-            task_desc = ''
-            task_desc = request.form.get("task_desc")
-            task_start = ''
-            task_start = request.form.get("task_start")
-            task_target = ''
-            task_target = request.form.get("task_target")
-            task_status = ''
-            task_status = request.form.get("task_status")
-            task_priority = ''
-            task_priority = request.form.get("task_priority")
-            task_assigned = ''
-            task_assigned = request.form.get("task_assigned")
-            first_name = ''
-            first_name = request.form.get("user_assigned")
+            # task_label = ''
+            if request.form.get("task_label") == '':
+                flash("Please enter a title", category='error')
+            elif request.form.get("task_desc") == '':
+                flash("Please enter a description", category='error')
+            elif request.form.get("task_start") == '':
+                flash("Please enter a start date", category='error')
+            elif request.form.get("task_status") == '':
+                flash("Please enter a status", category='error')
+            else:
+                task_label = request.form.get("task_label")
+                task_desc = request.form.get("task_desc")
+                task_start = request.form.get("task_start")
+                task_status = request.form.get("task_status")
+                task_target = request.form.get("task_target")
+                task_priority = request.form.get("task_priority")
+                task_assigned = request.form.get("task_assigned")
+                first_name = request.form.get("user_assigned")
 
 
-            # Check box on task screen, will assign to current user creating the task when checked
-            if task_assigned == 'on':
-                # snapshot user object
-                user = session['user']
-                # print(user)
+                # Check box on task screen, will assign to current user creating the task when checked
+                if task_assigned == 'on':
+                    # snapshot user object
+                    user = session['user']
+                    # print(user)
 
-                # parse user name from user object
-                user_name = user[0]['email']
-                # print(user_name)
-                # get firstname of user from user db
-                select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
-                cur.execute(select_first_name, {'user_name': user_name})
-                first_name_obj = cur.fetchall()
-                first_name = first_name_obj[0]['first_name']
-                # print(first_name)
+                    # parse user name from user object
+                    user_name = user[0]['email']
+                    # print(user_name)
+                    # get firstname of user from user db
+                    select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
+                    cur.execute(select_first_name, {'user_name': user_name})
+                    first_name_obj = cur.fetchall()
+                    first_name = first_name_obj[0]['first_name']
+                    # print(first_name)
 
 
-            # Get Max task number, add one to it for next added task
-            select_highest_task_num = """SELECT MAX(DISTINCT task_num) as maxNum FROM task"""
-            cur.execute(select_highest_task_num)
-            max_task_obj = cur.fetchall()
-            max_task = max_task_obj[0]['maxNum']
-            # print(max_task)
+                # Get Max task number, add one to it for next added task
+                select_highest_task_num = """SELECT MAX(DISTINCT task_num) as maxNum FROM task"""
+                cur.execute(select_highest_task_num)
+                max_task_obj = cur.fetchall()
+                max_task = max_task_obj[0]['maxNum']
+                # print(max_task)
 
-            # Set Next incremental Task Number
-            task_num = max_task + 1
+                # Set Next incremental Task Number
+                task_num = max_task + 1
 
-            task_data = (task_num, task_label, task_status, task_priority, task_start, task_target, first_name, task_desc)
-            cur.execute('''INSERT INTO task VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', task_data)
-            mysql.connection.commit()
+                task_data = (task_num, task_label, task_status, task_priority, task_start, task_target, first_name, task_desc)
+                cur.execute('''INSERT INTO task VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', task_data)
+                mysql.connection.commit()
 
-            # Close the cursor connection
-            cur.close()
+                # Close the cursor connection
+                cur.close()
 
-            return redirect(url_for('home'))
+                return redirect(url_for('home'))
 
     # Open Connection
     cur = mysql.connection.cursor()
