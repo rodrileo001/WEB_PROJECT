@@ -54,7 +54,6 @@
                         </li>
                         {% endfor %}
                     </ul>
-                    <!-- <a href="/clear_genres" class="btn btn-sm btn-outline-secondary mt-2 float-right">Clear</a> -->
                 </div>
             </div>
         </div>
@@ -70,7 +69,6 @@
                         </li>
                         {% endfor %}
                     </ul>
-                    <!-- <a href="/clear_viewd" class="btn btn-sm btn-outline-secondary mt-2 float-right">Clear</a> -->
                 </div>
             </div>
         </div>
@@ -93,16 +91,13 @@
     <hr class="my-4">
 
     <div class="container-fluid mt-0 bg" id="taskListContainer">
-        <!-- <h3 class="text-center" id="suggestedSearchText">Suggested Movies based on Generes Searched</h3> -->
 
-        <!-- Side Bar -->
+
         <div class="col-2" id="sideBar"></div>
 
         <div class="col-8 mx-auto" id="task_list">
 
-            <!-- List of Moives-->
 
-            <!-- Title -->
             <h3 class="text-center">Assigned Tasks</h3>
             <table class="table table-dark shadow-lg">
                 <thead>
@@ -143,13 +138,11 @@
                         <th scope="col">Task</th>
                         <th scope="col">Status</th>
                         <th scope="col">Description</th>
-                        <!-- <th scope="col">Assigned To</th> -->
                     </tr>
                 </thead>
                 <tbody>
                     {% for task in unassigned_task_list %}
                     <tr>
-
                         <th scope="row">
                             <form action="/task" method="POST">
                                 <input type="submit" name="taskNum" value="{{ task['task_num'] }}" id="taskNumLink">
@@ -159,21 +152,9 @@
                         <td>{{ task['task'] }}</td>
                         <td>{{ task['status'] }}</td>
                         <td>{{ task['description'] }}</td>
-                        <!-- <td>{{ task['assigned_to'] }}</td> -->
                     </tr>
                     {% endfor %}
-                    <!-- <tr>
-                        <th scope="row"><span>TSK002</span></th>
-                        <td>This is task 2</td>
-                        <td>Pending</td>
-                        <td>This is what you need to do for task 2</td>
-                    </tr>
-                    <tr>
-                        <th scope="row"><span>TSK003</span></th>
-                        <td>This is task 3</td>
-                        <td>Closed</td>
-                        <td>This is what you need to do for task 3</td>
-                    </tr> -->
+
                 </tbody>
             </table>
 
@@ -188,7 +169,6 @@
                         <th scope="col">Status</th>
                         <th scope="col">Description</th>
                         <th scope="col">Worked By</th>
-                        <!-- <th scope="col">Assigned To</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -207,26 +187,8 @@
                         <td>{{ task['assigned_to'] }}</td>
                     </tr>
                     {% endfor %}
-                    <!-- <tr>
-                        <th scope="row"><span>TSK002</span></th>
-                        <td>This is task 2</td>
-                        <td>Pending</td>
-                        <td>This is what you need to do for task 2</td>
-                    </tr>
-                    <tr>
-                        <th scope="row"><span>TSK003</span></th>
-                        <td>This is task 3</td>
-                        <td>Closed</td>
-                        <td>This is what you need to do for task 3</td>
-                    </tr> -->
                 </tbody>
             </table>
-
-
-            <!-- <a href="/task">Task Details</a> -->
-
-
-
 
         </div>
         <div class="col-2" id="sideBar"></div>

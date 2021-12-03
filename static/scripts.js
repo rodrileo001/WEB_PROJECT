@@ -12,7 +12,6 @@
 function getTicketNum(btn) {
 
     task_num = btn.innerHTML;
-    // console.log(title);
 
     const URL = '/task'
     const xhr = new XMLHttpRequest();
@@ -23,5 +22,4 @@ function getTicketNum(btn) {
     xhr.send(JSON.stringify({
         value: task_num
     }));
-    // alert("Movie added to Viewed List")
 }

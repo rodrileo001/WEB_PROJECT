@@ -24,13 +24,14 @@
             <div class="card-body">
 
                 <div class="container">
-                    <h3>Open Tasks</h3>
+                    <h1 class="text-center mt-4" id="taskID">Task {{ task_number }} Details</h1>
                     <form action="/update_task" method="POST">
                         <div class="row">
                             <div class=" col">
                                 <span>Assigned To: </span>
                                 <select id="userChange" class="form-control" name="user_change">
                                     <option selected>{{ task_assigned_to }}</option>
+                                    <option></option>
                                     {% for user in user_list %}
                                     <option>{{ user['first_name']}}</option>
                                     {% endfor %}
