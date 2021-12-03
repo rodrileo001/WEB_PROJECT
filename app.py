@@ -307,7 +307,7 @@ def addComment():
 
             return render_template('task.html', task_number=task_number)
 
-            # return redirect(url_for('task'))
+    return redirect(url_for('task'))
 
 #   Remove Comment
 
@@ -345,7 +345,7 @@ def removeComment():
             mysql.connection.commit()
             cur.close()
 
-            return redirect(url_for('task'))
+            return redirect(url_for('home'))
 
 
 #   Create New Task
@@ -353,12 +353,14 @@ def removeComment():
 @app.route('/new_task', methods=['GET', "POST"])
 def newTask():
     if "user" in session:
+
         if request.method == 'POST':
             temp = request.form
             print(temp)
 
             # Open Connection
             cur = mysql.connection.cursor()
+
 
             # Each field should be initialized to null
             # So all values can be passed to DB, and null inserted if nothing chosen
@@ -377,6 +379,8 @@ def newTask():
             task_assigned = ''
             task_assigned = request.form.get("task_assigned")
             first_name = ''
+            first_name = request.form.get("user_assigned")
+
 
             # Check box on task screen, will assign to current user creating the task when checked
             if task_assigned == 'on':
@@ -413,7 +417,17 @@ def newTask():
 
             return redirect(url_for('home'))
 
-    return render_template("new_task.html")
+    # Open Connection
+    cur = mysql.connection.cursor()
+
+    # Get List of users
+    select_user_list_new_task = """SELECT first_name FROM user """
+    cur.execute(select_user_list_new_task)
+    user_list_new_task = cur.fetchall()
+    # print(user_list)
+    cur.close()
+
+    return render_template("new_task.html", user_list_new_task=user_list_new_task)
 
 
 #   Boss Page
@@ -440,7 +454,7 @@ def boss():
 
             # Get number of tasks per user
             select_user_count_query = """SELECT assigned_to, count(assigned_to) as count FROM task 
-                WHERE assigned_to != '' GROUP BY assigned_to ORDER BY count(assigned_to) desc """
+                WHERE assigned_to != '' AND status != 'Closed' GROUP BY assigned_to ORDER BY count(assigned_to) desc """
             cur.execute(select_user_count_query)
             user_count = cur.fetchall()
             print(user_count)
