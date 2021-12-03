@@ -361,9 +361,7 @@ def newTask():
             cur = mysql.connection.cursor()
 
 
-            # Each field should be initialized to null
-            #   so all values can be passed to DB, and null inserted if nothing chosen
-            # task_label = ''
+            # Verify input for Titel, Description, Start Date, Status, and Priority
             if request.form.get("task_label") == '':
                 flash("Please enter a Title", category='error')
             elif request.form.get("task_desc") == '':
