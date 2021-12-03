@@ -29,6 +29,24 @@ html {
 }
 
 
+/* table {
+  border-radius: 20px;
+  
+  
+}
+
+thead {
+  border: none;
+
+} */
+
+
+.newTaskLabel {
+  font-size: larger;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+
 .ulList {
   border-radius: 10px;
 }

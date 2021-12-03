@@ -24,13 +24,14 @@
             <div class="card-body">
 
                 <div class="container">
-                    <h3>Open Tasks</h3>
+                    <!-- <h1 class="text-center mt-4" id="taskID">Task {{ task_number }} Details</h1> -->
                     <form action="/update_task" method="POST">
                         <div class="row">
                             <div class=" col">
                                 <span>Assigned To: </span>
                                 <select id="userChange" class="form-control" name="user_change">
                                     <option selected>{{ task_assigned_to }}</option>
+                                    <option></option>
                                     {% for user in user_list %}
                                     <option>{{ user['first_name']}}</option>
                                     {% endfor %}
@@ -97,7 +98,8 @@
                         </div>
                 </div>
 
-                <button type="submit" class="btn btn-outline-secondary btn mt-4 float-right">Update</button>
+                <button type="submit" id="taskUpdate"
+                    class="btn btn-outline-secondary btn mt-4 float-right">Update</button>
                 <input type="hidden" name="updateTaskNum" value="{{ task_number }}">
                 </form>
 
@@ -112,7 +114,7 @@
                             <div class="media-body">
                                 <h5 class="mt-0">{{ comment['assigned_to']}}</h5>
                                 <p>{{ comment['comment']}}</p>
-                                <button href="/remove_comment" type="submit"
+                                <button href="/remove_comment" type="submit" id="removeComment"
                                     class="btn btn-sm btn-outline-secondary float-right">Remove</button>
                             </div>
                         </div>
@@ -134,9 +136,9 @@
 </div>
 
 <!-- Modal for Comment-->
-<div class="modal fade modal-dialog modal-dialog-centered" id="staticBackdrop" data-backdrop="static"
-    data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal  fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">Add Comment</h5>
@@ -148,11 +150,11 @@
 
                 <form action="/add_comment" method="POST" id="commentForm">
                     <div class="form-group">
-                        <input type="hidden" name="task_number" value="{{ task_number }}" id="">
                         <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="newCommentText"
                             name="textArea" form="commentForm"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-secondary">Add</button>
+                    <button type="submit" id="addComment" class="btn btn-secondary">Add</button>
+                    <input type="hidden" name="task_number" value="{{ task_number }}" id="">
                 </form>
             </div>
         </div>

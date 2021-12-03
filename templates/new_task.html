@@ -15,7 +15,6 @@
     <div class="collapse navbar-collapse" id="MainNavbarContent">
 
         <ul class="navbar-nav">
-            {% if "user" in session %}
             <li class="nav-item ">
                 <a class="nav-link " id="homeTab" href="/home">Home <span class="sr-only">(current)</span></a>
             </li>
@@ -27,13 +26,35 @@
         </ul>
         <a class="btn btn-outline-secondary btn-sm ml-auto mt-3 mt-lg-0" role="button" type="button" id="logout"
             href="/logout" aria-disabled="true">Logout</a>
-        {% endif %}
     </div>
 </nav>
 {% endblock %}
 
 
 {% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for categor, message in messages %}
+{% if categor == 'error' %}
+<div class="alert alert-danger alert-dismissable fade show" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% else %}
+<div class="alert alert-success alert-dismissable fade show" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+{% endfor%}
+{% endif %}
+{% endwith %}
+
 
 <div class="container">
 
@@ -42,7 +63,7 @@
         <form class="mt-5" action="/new_task" method="POST">
             <div class="form-row">
                 <div class="form-group col-md-2">
-                    <label for="inputState">Assigned</label>
+                    <label for="userAssigned" class="newTaskLabel">Assigned</label>
                     <select id="userAssigned" class="form-control" name="user_assigned">
                         <option selected>{{ task_assigned_to }}</option>
                         {% for user in user_list_new_task %}
@@ -51,26 +72,26 @@
                     </select>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputEmail4">Task</label>
-                    <input type="text" class="form-control" id="inputEmail4" name="task_label">
+                    <label for="inputTask" class="newTaskLabel">Task</label>
+                    <input type="text" class="form-control" id="inputTask" name="task_label">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputPassword4">Description</label>
-                    <input type="text" class="form-control" id="inputPassword4" name="task_desc">
+                    <label for="inputDescription" class="newTaskLabel">Description</label>
+                    <input type="text" class="form-control" id="inputDescription" name="task_desc">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="inputCity">Start Date</label>
-                    <input type="date" class="form-control" id="inputCity" name="task_start">
+                    <label for="inputStartDate" class="newTaskLabel">Start Date</label>
+                    <input type="date" class="form-control" id="inputStartDate" name="task_start">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputCity">Target Date</label>
-                    <input type="date" class="form-control" id="inputCity" name="task_target">
+                    <label for="inputTargetDate" class="newTaskLabel">Target Date</label>
+                    <input type="date" class="form-control" id="inputTargetDate" name="task_target">
                 </div>
                 <div class="form-group col-md-2">
-                    <label for="inputState">Status</label>
-                    <select id="inputState" class="form-control" name="task_status">
+                    <label for="inputStatus" class="newTaskLabel">Status</label>
+                    <select id="inputStatus" class="form-control" name="task_status">
                         <option selected></option>
                         <option>Open</option>
                         <option>Pending</option>
@@ -78,8 +99,8 @@
                     </select>
                 </div>
                 <div class="form-group col-md-2">
-                    <label for="inputState">Priority</label>
-                    <select id="inputState" class="form-control" name="task_priority">
+                    <label for="inputPriority" class="newTaskLabel">Priority</label>
+                    <select id="inputPriority" class="form-control" name="task_priority">
                         <option selected></option>
                         <option>Low</option>
                         <option>Medium</option>
@@ -87,7 +108,7 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group d-inline">
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="gridCheck" name="task_assigned">
                     <label class="form-check-label" for="gridCheck">
@@ -95,7 +116,7 @@
                     </label>
                 </div>
             </div>
-            <button type="submit" class="btn btn-secondary float-right">Create</button>
+            <button type="submit" class="btn btn-dark float-right">Create</button>
         </form>
 
 </div>

@@ -17,6 +17,9 @@
 </head>
 
 <body>
+
+
+
     {% block body %}
 
     {% block navbar %}
@@ -30,78 +33,21 @@
         <div class="collapse navbar-collapse" id="MainNavbarContent">
 
             <ul class="navbar-nav">
-                {% if "user" in session %}
                 <li class="nav-item ">
                     <a class="nav-link " id="homeTab" href="/home">Home <span class="sr-only">(current)</span></a>
                 </li>
-
-                <!-- <li class="nav-item">
-                    <a class="nav-link " id="searchTab" href="/search">Search</a>
-                </li> -->
-                {% else %}
-                <li class="nav-item ">
-                    <a class="nav-link " id="newTaskTab" href="/new_task">New Task <span
-                            class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item ">
-                    <a class="nav-link " id="bossTab" href="/boss">Boss <span class="sr-only">(current)</span></a>
-                </li>
-
-
-
-
-                <!-- <li class="nav-item">
-                    <a class="nav-link" id="login" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="signUp" href="/sign-up">Sign Up</a>
-                </li> -->
-                {% endif %}
             </ul>
-            {% if "user" in session %}
             <a class="btn btn-outline-secondary btn-sm ml-auto mt-3 mt-lg-0" role="button" type="button" id="logout"
                 href="/logout" aria-disabled="true">Logout</a>
-            {% endif %}
         </div>
     </nav>
     {% endblock %}
 
 
-
-
-
-    <!-- Show Flash Messages
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for categor, message in messages %}
-    {% if categor == 'error' %}
-    <div class="alert alert-danger alert-dismissable fade show" role="alert">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% else %}
-    <div class="alert alert-success alert-dismissable fade show" role="alert">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    {% endif %}
-    {% endfor%}
-    {% endif %}
-    {% endwith %} -->
-
     <div class="container">
         {% block content %}
         {% endblock %}
     </div>
-
-
-
-
-
 
 
 
@@ -116,17 +62,10 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
 
-
-
     <script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
-
     <script src="https://kit.fontawesome.com/09b8f237dc.js" crossorigin="anonymous"></script>
 
-
-
     {% endblock %}
-
-
 
     {% endblock %}
 </body>

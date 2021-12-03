@@ -1,10 +1,9 @@
-from flask import Flask, render_template, request, flash, redirect, url_for, session, json, jsonify
+from flask import Flask, render_template, request,  flash, redirect, url_for, session, json, jsonify
 from flask_mysqldb import MySQL
+import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta  # Used to set session time, perm
 
-
-# from flask_login import login_user, logout_user, login_required, current_user
 
 
 # Create Flask APP
@@ -55,7 +54,6 @@ def login():
         # Get data input in form
         email = request.form.get('email')
         password = request.form.get('password')
-
         # Get saved data in DB to match with
         select_stmt = """SELECT email, password FROM user WHERE email = %(email)s AND password = %(password)s """
         cur.execute(select_stmt, {'email': email, 'password': password})
@@ -63,7 +61,7 @@ def login():
 
         if user:
             if user[0]['password'] == password:
-                # flash("You are logged in.", category='success')
+
                 # Define THIS session as permanent defined above
                 session.permanent = True
                 session['user'] = user
@@ -95,7 +93,7 @@ def sign_up():
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
         role = request.form.get('role')
-        print(role)
+        # print(role)
 
         password_hash = generate_password_hash(password1, method='sha256')
         user_data = (email, password1, first_name, role)
@@ -150,19 +148,18 @@ def home():
 
             # snapshot user object
             user = session['user']
-            print(session)
+            # print(session)
             # print(user)
-
             # parse user name from user object
             user_name = user[0]['email']
-            print(user_name)
+            # print(user_name)
 
             # get user role from DB
             select_role = """SELECT role FROM user WHERE email = %(user_name)s """
             cur.execute(select_role, {'user_name': user_name})
             role_obj = cur.fetchall()
             user_role = role_obj[0]['role']
-            print(user_role)
+            # print(user_role)
 
             # get firstname of user from user db
             select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
@@ -223,7 +220,9 @@ def task():
         # print(first_name)
 
         # Get Task Number from form body
-        task_number = request.form.get('taskNum')
+        # task_number = request.form.get('taskNum')
+        task_number = request.args['taskNum']
+        print(task_number)
         # print(task_number)
 
         # get task detail of task from task table
@@ -236,7 +235,7 @@ def task():
         select_comments_query = """SELECT comment, assigned_to FROM comments WHERE task_num = %(task_number)s """
         cur.execute(select_comments_query, {'task_number': task_number})
         comment_list = cur.fetchall()
-        print(comment_list)
+        # print(comment_list)
 
         # Get List of users
         select_user_list = """SELECT first_name FROM user """
@@ -253,7 +252,7 @@ def task():
         task_target_date = task_detail[0]['target_date']
         task_description = task_detail[0]['description']
         task_label = task_detail[0]['task']
-        print(task_status)
+        # print(task_status)
         # return redirect(url_for('task'))
 
         return render_template("task.html", task_status=task_status,
@@ -305,9 +304,9 @@ def addComment():
             # Close the cursor connection
             cur.close()
 
-            return redirect(url_for('home'))
+            return redirect(url_for('task', taskNum=task_number))
 
-    return redirect(url_for('task'))
+    # return redirect(url_for('task'))
 
 #   Remove Comment
 
@@ -335,9 +334,9 @@ def removeComment():
 
             # Get Comment text and Task number to remove from comments table
             comment_text = request.form.get("commentText")
-            print(comment_text)
+            # print(comment_text)
             task_num = request.form.get('commentTaskNum')
-            print(task_num)
+            # print(task_num)
 
             # Remove comment from comments table assoicated to task number
             remove_comment_query = """DELETE FROM comments  WHERE assigned_to = %(first_name)s AND comment = %(comment)s AND task_num = %(task_num)s """
@@ -345,7 +344,7 @@ def removeComment():
             mysql.connection.commit()
             cur.close()
 
-            return redirect(url_for('home'))
+            return redirect(url_for('task', taskNum=task_num))
 
 
 #   Create New Task
@@ -355,67 +354,70 @@ def newTask():
     if "user" in session:
 
         if request.method == 'POST':
-            temp = request.form
-            print(temp)
+            # temp = request.form
+            # print(temp)
 
             # Open Connection
             cur = mysql.connection.cursor()
 
 
             # Each field should be initialized to null
-            # So all values can be passed to DB, and null inserted if nothing chosen
-            task_label = ''
-            task_label = request.form.get("task_label")
-            task_desc = ''
-            task_desc = request.form.get("task_desc")
-            task_start = ''
-            task_start = request.form.get("task_start")
-            task_target = ''
-            task_target = request.form.get("task_target")
-            task_status = ''
-            task_status = request.form.get("task_status")
-            task_priority = '0'
-            task_priority = request.form.get("task_priority")
-            task_assigned = ''
-            task_assigned = request.form.get("task_assigned")
-            first_name = ''
-            first_name = request.form.get("user_assigned")
+            #   so all values can be passed to DB, and null inserted if nothing chosen
+            # task_label = ''
+            if request.form.get("task_label") == '':
+                flash("Please enter a title", category='error')
+            elif request.form.get("task_desc") == '':
+                flash("Please enter a description", category='error')
+            elif request.form.get("task_start") == '':
+                flash("Please enter a start date", category='error')
+            elif request.form.get("task_status") == '':
+                flash("Please enter a status", category='error')
+            else:
+                task_label = request.form.get("task_label")
+                task_desc = request.form.get("task_desc")
+                task_start = request.form.get("task_start")
+                task_status = request.form.get("task_status")
+                task_target = request.form.get("task_target")
+                task_priority = request.form.get("task_priority")
+                task_assigned = request.form.get("task_assigned")
+                first_name = request.form.get("user_assigned")
 
 
-            # Check box on task screen, will assign to current user creating the task when checked
-            if task_assigned == 'on':
-                # snapshot user object
-                user = session['user']
-                # print(user)
+                # Check box on task screen, will assign to current user creating the task when checked
+                if task_assigned == 'on':
+                    # snapshot user object
+                    user = session['user']
+                    # print(user)
 
-                # parse user name from user object
-                user_name = user[0]['email']
-                # print(user_name)
-                # get firstname of user from user db
-                select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
-                cur.execute(select_first_name, {'user_name': user_name})
-                first_name_obj = cur.fetchall()
-                first_name = first_name_obj[0]['first_name']
-                # print(first_name)
+                    # parse user name from user object
+                    user_name = user[0]['email']
+                    # print(user_name)
+                    # get firstname of user from user db
+                    select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
+                    cur.execute(select_first_name, {'user_name': user_name})
+                    first_name_obj = cur.fetchall()
+                    first_name = first_name_obj[0]['first_name']
+                    # print(first_name)
 
 
-            # Get Max task number, add one to it for next added task
-            select_highest_task_num = """SELECT MAX(DISTINCT task_num) as maxNum FROM task"""
-            cur.execute(select_highest_task_num)
-            max_task_obj = cur.fetchall()
-            max_task = max_task_obj[0]['maxNum']
-            # print(max_task)
-            # Set Next incremental Task Number
-            task_num = max_task + 1
+                # Get Max task number, add one to it for next added task
+                select_highest_task_num = """SELECT MAX(DISTINCT task_num) as maxNum FROM task"""
+                cur.execute(select_highest_task_num)
+                max_task_obj = cur.fetchall()
+                max_task = max_task_obj[0]['maxNum']
+                # print(max_task)
 
-            task_data = (task_num, task_label, task_status, task_priority, task_start, task_target, first_name, task_desc)
-            cur.execute('''INSERT INTO task VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', task_data)
-            mysql.connection.commit()
+                # Set Next incremental Task Number
+                task_num = max_task + 1
 
-            # Close the cursor connection
-            cur.close()
+                task_data = (task_num, task_label, task_status, task_priority, task_start, task_target, first_name, task_desc)
+                cur.execute('''INSERT INTO task VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', task_data)
+                mysql.connection.commit()
 
-            return redirect(url_for('home'))
+                # Close the cursor connection
+                cur.close()
+
+                return redirect(url_for('home'))
 
     # Open Connection
     cur = mysql.connection.cursor()
@@ -457,33 +459,33 @@ def boss():
                 WHERE assigned_to != '' AND status != 'Closed' GROUP BY assigned_to ORDER BY count(assigned_to) desc """
             cur.execute(select_user_count_query)
             user_count = cur.fetchall()
-            print(user_count)
+            # print(user_count)
 
             # Get number of unassigned Tasks
             select_unassigned_count_query = """SELECT assigned_to, count(assigned_to) as count FROM task 
                             WHERE assigned_to = '' GROUP BY assigned_to ORDER BY count(assigned_to) desc """
             cur.execute(select_unassigned_count_query)
             unassigned_count = cur.fetchall()
-            print(user_count)
+            # print(user_count)
 
             # Get number of task per each Priority
             select_priority_count_query = """SELECT priority, count(priority) as count FROM task WHERE status != 'Closed'
                                         GROUP BY priority ORDER BY count(priority) desc """
             cur.execute(select_priority_count_query)
             priority_count = cur.fetchall()
-            print(priority_count)
+            # print(priority_count)
 
             # get list of open assigned tasks from task db
             user_assigned_task_list = """SELECT task_num, task, status, description, assigned_to FROM task WHERE assigned_to != '' AND status != 'Closed'  """
             cur.execute(user_assigned_task_list, {'first_name': first_name})
             task_list = cur.fetchall()
-            print(task_list)
+            # print(task_list)
 
             # get task list of open unassigned tasks from task db
             user_not_assigned_task_list = """SELECT task_num, task, status, description, assigned_to FROM task WHERE assigned_to = '' AND status != 'Closed'  """
             cur.execute(user_not_assigned_task_list, {'first_name': first_name})
             unassigned_task_list = cur.fetchall()
-            print(unassigned_task_list)
+            # print(unassigned_task_list)
 
             # get task list of closed tasks from task db
             user_closed_task_list = """SELECT task_num, task, status, description, assigned_to FROM task WHERE status = 'Closed'  """
@@ -510,8 +512,8 @@ def boss():
 def updateTask():
     if "user" in session:
         if request.method == 'POST':
-            temp = request.form
-            print(temp)
+            # temp = request.form
+            # print(temp)
 
             task_new_target = request.form.get("target_change")
             task_new_status = request.form.get("status_change")
@@ -534,13 +536,6 @@ def updateTask():
 
     return render_template("task.html")
 
-
-
-
-
-@app.route('/assign_user', methods=['GET', "POST"])
-def assignUser():
-    return render_template("home.html")
 
 
 
