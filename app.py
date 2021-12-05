@@ -207,14 +207,13 @@ def home():
 @app.route('/task', methods=['GET', 'POST'])
 def task():
     if "user" in session:
-        #     if request.method == 'GET':
         # Open Connection
         cur = mysql.connection.cursor()
         cur.execute(DB)
 
         # snapshot user object
         user = session['user']
-        # print(user)
+        print(session)
         # parse user name from user object
         user_name = user[0]['email']
         # print(user_name)
@@ -236,8 +235,7 @@ def task():
         # Get Task Number from form body
         # task_number = request.form.get('taskNum')
         task_number = request.args['taskNum']
-        print(task_number)
-        # print(task_number)
+        print(request.args)
 
         # get task detail of task from task table
         select_task = """SELECT status, priority, start_date, assigned_to, target_date, description, task FROM task WHERE task_num = %(tempTaskNum)s """
@@ -278,8 +276,9 @@ def task():
                                comment_list=comment_list,
                                task_label=task_label,
                                task_number=task_number,
-                               user_list=user_list)
-    return render_template("login.html")
+                               user_list=user_list,
+                               user_name=user_name)
+    # return render_template("login.html")
 
 
 #   Add Comment
@@ -341,12 +340,14 @@ def removeComment():
             cur = mysql.connection.cursor()
             cur.execute(DB)
 
-            # get firstname of user from user db
-            select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
+            # get firstname and role of user from user db
+            select_first_name = """SELECT first_name, role FROM user WHERE email = %(user_name)s """
             cur.execute(select_first_name, {'user_name': user_name})
             first_name_obj = cur.fetchall()
             first_name = first_name_obj[0]['first_name']
-            # print(first_name)
+            role = first_name_obj[0]['role']
+            # print(role)
+
 
             # Get Comment text and Task number to remove from comments table
             comment_text = request.form.get("commentText")
@@ -354,11 +355,19 @@ def removeComment():
             task_num = request.form.get('commentTaskNum')
             # print(task_num)
 
-            # Remove comment from comments table assoicated to task number
-            remove_comment_query = """DELETE FROM comments  WHERE assigned_to = %(first_name)s AND comment = %(comment)s AND task_num = %(task_num)s """
-            cur.execute(remove_comment_query, {'first_name': first_name, "comment": comment_text, "task_num": task_num})
-            mysql.connection.commit()
-            cur.close()
+            if role == "Boss":
+                # Remove comment from comments table Boss Level remove any
+                remove_comment_query = """DELETE FROM comments  WHERE comment = %(comment)s AND task_num = %(task_num)s """
+                cur.execute(remove_comment_query,
+                            {'first_name': first_name, "comment": comment_text, "task_num": task_num})
+                mysql.connection.commit()
+                cur.close()
+            else:
+                # Remove comment from comments table associated to task number added by this user only
+                remove_comment_query = """DELETE FROM comments  WHERE assigned_to = %(first_name)s AND comment = %(comment)s AND task_num = %(task_num)s """
+                cur.execute(remove_comment_query, {'first_name': first_name, "comment": comment_text, "task_num": task_num})
+                mysql.connection.commit()
+                cur.close()
 
             return redirect(url_for('task', taskNum=task_num))
 
