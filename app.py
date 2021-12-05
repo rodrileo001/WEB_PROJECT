@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request,  flash, redirect, url_for, session, json, jsonify
 from flask_mysqldb import MySQL
-import requests
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta  # Used to set session time, perm
 
