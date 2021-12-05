@@ -15,14 +15,26 @@ def create_app():
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
     app.config['MYSQL_PASSWORD'] = 'KodaBlue1!'
-    app.config['MYSQL_DB'] = 'task'
     # converts from string to dictionary
     app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
     # set session life time
     app.permanent_session_lifetime = timedelta(minutes=15)
-
+    
     return app
 
+def create_db():
+    with app.app_context():
+        cur = mysql.connection.cursor()
+        # Make DB
+        cur.execute("CREATE DATABASE IF NOT EXISTS task")
+        cur.execute(DB)
+        # Make Tables
+        cur.execute("CREATE TABLE IF NOT EXISTS comments(assigned_to VARCHAR(30), comment VARCHAR(1000), task_num INTEGER)")
+        cur.execute("""CREATE TABLE IF NOT EXISTS task(task_num INTEGER, task VARCHAR(45), status VARCHAR(45), priority VARCHAR(10),
+                    start_date VARCHAR(20), target_date VARCHAR(20), assigned_to VARCHAR(45), description VARCHAR(100))""")
+        cur.execute("CREATE TABLE IF NOT EXISTS user(email VARCHAR(30), password VARCHAR(45), first_name VARCHAR(45), role VARCHAR(45))")
+        mysql.connection.commit()
+        cur.close()
 
 # Instance of Flask APP
 app = create_app()
@@ -30,9 +42,9 @@ app = create_app()
 # Instance of MySQL DB
 mysql = MySQL(app)
 
-
 # Create MySQL DB in MySQL server
-
+DB = "USE task"
+create_db()
 
 # ------ ROUTES
 #   Index
@@ -50,7 +62,7 @@ def login():
     if request.method == 'POST':
         # Open Connection
         cur = mysql.connection.cursor()
-
+        cur.execute(DB)
         # Get data input in form
         email = request.form.get('email')
         password = request.form.get('password')
@@ -100,6 +112,7 @@ def sign_up():
 
         # Open Connection
         cur = mysql.connection.cursor()
+        cur.execute(DB)
         select_stmt = """SELECT email FROM user WHERE email = %(email)s """
         cur.execute(select_stmt, {'email': email})
         user = cur.fetchall()
@@ -145,6 +158,7 @@ def home():
         if request.method == 'GET':
             # Open Connection
             cur = mysql.connection.cursor()
+            cur.execute(DB)
 
             # snapshot user object
             user = session['user']
@@ -197,6 +211,7 @@ def task():
         #     if request.method == 'GET':
         # Open Connection
         cur = mysql.connection.cursor()
+        cur.execute(DB)
 
         # snapshot user object
         user = session['user']
@@ -289,6 +304,7 @@ def addComment():
 
             # Open Connection
             cur = mysql.connection.cursor()
+            cur.execute(DB)
 
             # get firstname of user from user db
             select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
@@ -324,6 +340,7 @@ def removeComment():
 
             # Open Connection
             cur = mysql.connection.cursor()
+            cur.execute(DB)
 
             # get firstname of user from user db
             select_first_name = """SELECT first_name FROM user WHERE email = %(user_name)s """
@@ -359,6 +376,7 @@ def newTask():
 
             # Open Connection
             cur = mysql.connection.cursor()
+            cur.execute(DB)
 
 
             # Verify input for Titel, Description, Start Date, Status, and Priority
@@ -406,6 +424,8 @@ def newTask():
                 max_task_obj = cur.fetchall()
                 max_task = max_task_obj[0]['maxNum']
                 # print(max_task)
+                if max_task is None:
+                    max_task = 0
 
                 # Set Next incremental Task Number
                 task_num = max_task + 1
@@ -421,6 +441,7 @@ def newTask():
 
     # Open Connection
     cur = mysql.connection.cursor()
+    cur.execute(DB)
 
     # Get List of users
     select_user_list_new_task = """SELECT first_name FROM user """
@@ -440,6 +461,7 @@ def boss():
         if request.method == 'GET':
             # Open Connection
             cur = mysql.connection.cursor()
+            cur.execute(DB)
 
             # snapshot user object
             user = session['user']
@@ -523,6 +545,7 @@ def updateTask():
 
             # Open Connection
             cur = mysql.connection.cursor()
+            cur.execute(DB)
 
             # Update task table with new details
             update_statement = """  UPDATE task SET target_date = %s, status = %s, priority  = %s, assigned_to = %s WHERE task_num = %s """
