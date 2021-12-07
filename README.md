@@ -99,4 +99,27 @@ After that, you can make all the changes you want and go wild. The following wil
 - `git commit -m "your message goes here go wild"` <- this commits your changes *locally* with a comment
 - `git push` <- this pushes all of your commits so far to the repo on the interweb
 
-## If you're using PyCharm and you ask me for help, please keep in mind that the first thing I'm gonna tell you to do is not use PyCharm, idk how to use PyCharm sry <3
+------------------------------------------------------------------------------------------------------------------------------------------
+Using Git and GitHub for PyCharm
+
+Need to have a GitHub account
+
+**Assuming you have git installed**
+To set up Git in PyCharm:
+
+1.) Click on VCS on the PyCharm toolbar
+2.) Click on ‘Enable Version Control Integration’
+3.) Select ‘Git’ then press Ok
+
+To clone repository into PyCharm  
+1.) Click on Git on the PyCharm toolbar then click Clone
+2.) copy and paste the repository URL into the URL space.
+3.) Click Ok and you should have the available project in PyCharm displayed.
+
+**For this particular Project**
+In terminal, install the proper packages, including requirements.txt (if not included)
+Example: (newer version of Python) pip3 install -r requirements.txt in terminal
+
+Accessing Project repository with multiple contributors
+
+Users will create a personal fork on GitHub for project so that they could edit and Push their changes so that a Pull Request can be submitted into the master branch.
